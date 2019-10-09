@@ -2,6 +2,7 @@ package Ant;
 
 use strict;
 use warnings;
+use Data::Dumper;
 
 use Exporter;
 use parent qw( Exporter );
@@ -42,19 +43,16 @@ $dir_x/$dir_y - направление муравья. Пример:
 sub travel {
   my ( $field, $pos_x, $pos_y, $steps, $dir_x, $dir_y ) = @_ ;
   my $field_size=@$field;
-  my $i=0;
-  if ($i<$steps) {
+  for ( my $i = 0; $i < $steps; $i++ ) {
     if ($field -> [$pos_x][$pos_y] == 1) {
           ($dir_x, $dir_y) = turn( $dir_x, $dir_y, TURN_RIGHT);
-           $i += 1;
            $field -> [$pos_x][$pos_y] = -1;
 }
    else {($dir_x,$dir_y) = turn( $dir_x, $dir_y, TURN_LEFT);
-            $i += 1;
         $field -> [$pos_x][$pos_y] = 1;
 } 
-}
   ($pos_x,$pos_y) = step_forward( $pos_x, $pos_y, $field_size, $dir_x, $dir_y );
+}
 }
 
 =head2 step_forward()
@@ -69,13 +67,13 @@ sub step_forward {
      if ( $pos_x < 0 ) {
        $pos_x = $field_size - 1;
 }
-     elsif ( $pos_x > $field_size ) {
+     elsif ( $pos_x >= $field_size ) {
        $pos_x = 0;
 }
      if ( $pos_y < 0 ) {
        $pos_y = $field_size - 1;
 }
-     elsif ( $pos_y > $field_size ) {
+     elsif ( $pos_y >= $field_size ) {
        $pos_y = 0;
 }
  return( $pos_x, $pos_y );
@@ -92,17 +90,22 @@ sub turn {
       if ($side == TURN_RIGHT) {
           if ($dir_x == 0) {
             $dir_x = $dir_y;
+            $dir_y = 0;
 }
           else { $dir_y = -$dir_x;
+                 $dir_x = 0;
 }
 }
       elsif ($side == TURN_LEFT) { 
           if( $dir_x == 0 ) {
-               $dir_x = -$dir_y
+               $dir_x = -$dir_y;
+               $dir_y = 0;              
 }
               else { $dir_y = $dir_x;
+                     $dir_x = 0; 
 }
 }
    return( $dir_x, $dir_y);
 
 }
+
